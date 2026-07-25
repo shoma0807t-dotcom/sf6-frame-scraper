@@ -5,7 +5,7 @@
 
 import { chromium } from 'playwright';
 import { getCharacterList } from './characters.js';
-import { parseFrameData } from './parser.js';
+import { parseFrameData } from './parser.mjs';
 import { saveJson } from './exporter.js'; // データの保存処理を委譲する想定
 import { checkCache, saveCache } from './cache.js'; // キャッシュ管理モジュールを想定
 
