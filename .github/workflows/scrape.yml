@@ -1,0 +1,42 @@
+name: SF6 Frame Scraper
+
+# 実行のトリガー（きっかけ）を設定
+on:
+  workflow_dispatch: # これを入れると手動実行ボタンが作られます
+  schedule:
+    - cron: '0 20 * * *' # 毎日朝5時(JST)に自動実行 (要件定義の「毎日実行」用)
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest # GitHub上のLinuxサーバーを使う
+
+    steps:
+    - name: リポジトリのコードをチェックアウト
+      uses: actions/checkout@v4
+
+    - name: Node.jsのセットアップ
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: パッケージのインストール
+      run: npm install
+
+    - name: Playwrightとブラウザ(Chromium)のインストール
+      run: npx playwright install --with-deps chromium
+
+    - name: スクレイピングの実行
+      run: xvfb-run --auto-servernum node src/scrape.js
+
+    - name: 生成されたJSONを保存 (Artifact)
+      uses: actions/upload-artifact@v4
+      with:
+        name: frame-data
+        path: output/frame-data.json
+- name: Commit and push updated JSON
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add output/data.json
+          git commit -m "Auto-update frame data JSON" || echo "No changes to commit"
+          git push
