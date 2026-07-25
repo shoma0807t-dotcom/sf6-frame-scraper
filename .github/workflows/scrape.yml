@@ -26,7 +26,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: スクレイピングの実行
-        run: xvfb-run --auto-servernum node src/scrape.js
+        run: xvfb-run --auto-servernum node src/scrape.js --force
 
       - name: 変更されたJSONを自動コミットしてプッシュ
         run: |
